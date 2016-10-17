@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.villegas.raul.firebase.NewPostActivity"
+    android:paddingTop="50dp">
+
+    <EditText
+        android:id="@+id/field_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Title"
+        android:background="@null"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/field_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/field_title"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/post_body_hint"
+        android:background="@null"
+        android:inputType="textMultiLine"
+        android:maxLines="10"
+        android:scrollHorizontally="false" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/field_body"
+        android:background="@color/com_facebook_button_background_color_disabled"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_room_black_24dp"
+        android:layout_below="@+id/field_body"
+        android:layout_above="@+id/Share_text"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        />
+    <EditText
+        android:id="@+id/field_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/field_body"
+        android:layout_marginLeft="46dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="15dp"
+        android:textSize="15dp"
+        android:hint="@string/hint_location"
+        android:background="@null"
+        android:inputType="textMultiLine"
+        android:maxLines="20"
+        android:scrollHorizontally="false" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="9dp"
+        android:layout_below="@+id/field_location"
+        android:background="@color/com_facebook_button_background_color_disabled"/>
+
+    <TextView
+        android:id="@+id/Share_text"
+        android:text="@string/com_facebook_share_button_text"
+        android:textSize="15dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/field_location"/>
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_below="@+id/Share_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/toggle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/check"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="16dp"
+            android:textOn=""
+            android:textOff=""
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/Share_text"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Facebook"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/Share_text"
+            android:layout_alignRight="@+id/fab_submit_post"
+            android:layout_alignEnd="@+id/fab_submit_post" />
+
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/ll1"
+        android:background="@color/com_facebook_button_background_color_disabled"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:id="@+id/picture_offer"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/ll1"
+        android:layout_marginTop="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="1dp"
+        android:layout_alignLeft="@+id/field_body"
+        android:layout_alignStart="@+id/field_body"
+        android:layout_alignRight="@+id/fab_submit_post"
+        android:layout_alignEnd="@+id/fab_submit_post" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_take_another_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu_camera"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_navigation_check_24"
+        android:layout_margin="16dp"/>
+
+
+
+</RelativeLayout>
+  <!--
+    {
+    "rules": {
+    "users": {
+    "$uid": {
+    ".read": "auth != null && auth.uid == $uid",
+    ".write": "auth != null && auth.uid == $uid",
+    "items": {
+    "$item_id": {
+    "title": {
+    ".validate": "newData.isString() && newData.val().length > 0"
+    }
+    }
+    }
+    }
+    }
+    }
+    } -->

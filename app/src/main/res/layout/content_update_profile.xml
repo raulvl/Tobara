@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:background="@color/com_facebook_button_login_silver_background_color"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.villegas.raul.firebase.UpdateProfileActivity"
+    tools:showIn="@layout/activity_update_profile"
+    android:divider="?android:dividerHorizontal"
+    android:showDividers="middle">
+
+  <!-- Change Profile Picture -->
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/cardview_light_background"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingBottom="2dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/changepictureiv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+            android:layout_alignLeft="@+id/changepicturetv"
+            android:src="@drawable/ic_action_account_circle_40"
+            android:layout_marginLeft="5dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/com_facebook_button_background_color_focused_disabled"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/changepicturetv"
+            android:text="@string/change_picture_profile"
+            android:textColor="@color/com_facebook_button_background_color_focused_disabled"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+    <!-- Change Profile Picture -->
+
+
+    <!-- Change Username -->
+
+    <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:background="@color/cardview_light_background"
+            android:weightSum="1">
+
+           <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@mipmap/update_username2"
+               android:layout_marginRight="5dp"
+               android:layout_alignLeft="@+id/usernameField"/>
+            <EditText
+                android:id="@+id/usernameField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="5dp" />
+
+       </LinearLayout>
+    <!-- Change Username -->
+
+    <!-- Change Email -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/cardview_light_background"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/mail"
+            android:layout_marginRight="5dp"
+            android:layout_alignLeft="@+id/emailField"/>
+        <EditText
+            android:id="@+id/emailField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp" />
+
+    </LinearLayout>
+    <!-- Change Email -->
+
+    <!-- Space Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/com_facebook_button_login_silver_background_color"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        >
+    </LinearLayout>
+    <!-- Space Layout -->
+
+    <!-- Change Password Layout with Spaces -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/cardview_light_background"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/updateprofileusername"
+            android:layout_marginRight="5dp"
+            android:layout_alignLeft="@+id/currPasswordField"/>
+       <TextView
+           android:id="@+id/changePasswordTV"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="@string/change_password_profile"
+           android:textColor="@color/com_facebook_button_background_color_focused_disabled"
+           android:textAppearance="@style/TextAppearance.AppCompat.Large"
+           android:layout_gravity="center_vertical"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

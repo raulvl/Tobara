@@ -1,0 +1,144 @@
+<resources>
+    <string name="app_name">Tobara</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="label_google_sign_in">Firebase + Google Sign In</string>
+    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
+
+    <string name="label_facebook_login">Firebase + Facebook Login</string>
+    <string name="desc_facebook_login">Use a Facebook Login credential to authenticate with Firebase.</string>
+
+    <string name="label_twitter_login">Firebase + Twitter Login</string>
+    <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
+
+    <string name="label_emailpassword">Email/Password Authentication</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+
+    <string name="label_anonymous_auth">Anonymous Authentication</string>
+    <string name="desc_anonymous_auth">Sign in anonymously and then later upgrade to a full Firebase Auth user..</string>
+
+    <string name="label_custom_auth">Custom Authentication</string>
+    <string name="desc_custom_auth">Use a custom token signed by your own server to authenticate with Firebase.</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="get_custom_token">Get Token</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="loading">Loading…</string>
+    <string name="custom_token">Custom Token</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+
+    <string name="google_status_fmt">Google User: %s</string>
+    <string name="google_title_text">Google Sign In</string>
+
+    <string name="facebook_status_fmt">Facebook User: %s</string>
+    <string name="facebook_title_text">Facebook Login</string>
+
+    <string name="emailpassword_status_fmt">Email User: %s</string>
+    <string name="emailpassword_title_text">Email and Password</string>
+
+    <string name="twitter_status_fmt">Twitter User: %s</string>
+    <string name="twitter_title_text">Twitter Login</string>
+
+    <string name="id_fmt">User ID: %s</string>
+    <string name="email_fmt">Email: %s</string>
+    <string name="title_activity_ofertas">Tobara</string>
+    <string name="log_out_ofertas">Log Out</string>
+    <string name="title_activity_login_with_email">Log in</string>
+
+
+    <string name="password_hint">Password</string>
+    <string name="email_hint">Email</string>
+    <string name="sign_up_button_label">Sign Up</string>
+    <string name="signup_error_message">Please make sure you enter an email address and password!</string>
+    <string name="signup_error_title">Error!</string>
+    <string name="signup_success">Account successfully created! You can now Login.</string>
+    <string name="login_error_message">Please make sure you enter an email address and password!</string>
+    <string name="login_error_title">Error!</string>
+    <string name="login_button_label">Log in</string>
+    <string name="sign_up_text">Sign Up!</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="add_post">Add New Offer</string>
+    <string name="action_logout">Logout</string>
+    <string name="google_console_client_id">799680535274-qn7n4a5rrhlha5rnm36m9vsd27a2lf5o.apps.googleusercontent.com</string>
+    <!-- pantalla principal -->
+
+    <!-- facebook id -->
+    <string name="facebook_app_id">1728362654100253</string>
+    <string name="title_activity_post_detail">Offer Details</string>
+
+    <!-- posts -->
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="title_activity_new_post">Post a new Offer</string>
+    <string name="post_body_hint">Write your post</string>
+    <string name="title_activity_feed">Feed</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="login_signup_button">Log in</string>
+    <string name="login_button_signup_logactivity"> Sign Up</string>
+    <string name="top_offers">Top Offers</string>
+    <string name="my_offers">My Offers</string>
+    <string name="recent_offers">Recent Offers</string>
+    <string name="select_source">Select Source</string>
+    <string name="register_text">Don\'t have an account yet? Begin here!</string>
+
+    <!-- config de cada post opción compartir y borrar -->
+    <string-array name="options">
+        <item>Share</item>
+        <item>Delete Offer</item>
+
+    </string-array>
+    <string-array name="options2">
+        <item>Share</item>
+    </string-array>
+
+    <string name="delete_post">"Offer deleted"</string>
+    <string name="welcome">Tobara - Collective Power</string>
+    <string name="title_activity_signup">Create Account</string>
+
+    <!-- PostDetail -->
+    <string name="placeholder_comment_post">Write a comment...</string>
+    <string name="button_post_comment">Post</string>
+    <string name="title_activity_update_profile">Update Profile</string>
+
+    <!-- Update profile -->
+    <string name="save_profile">SAVE</string>
+    <string name="change_picture_profile">Change picture profile</string>
+    <string name="change_password_profile">Change password</string>
+    <string name="toast_update_username">Username updated</string>
+    <string name="toast_update_email">Email updated</string>
+    <string name="toast_update_pass">Password updated</string>
+    <!-- Nav Drawer -->
+    <string name="settings_drawer">Edit profile</string>
+    <string name="title_activity_update_password">Change password</string>
+    
+    <!-- Dialog fragment update email -->
+    <string name="title_dialog_update_email">Type your password to change your email</string>
+    <string name="cancel_button_dialog_update_email">Cancel</string>
+    <string name="space_dialog_update_email"> </string>
+    <!-- Update Password layout -->
+    <string name="hint_curr_pass">Current password</string>
+    <string name="hint_new_pass">New password</string>
+    <string name="hint_conf_new_pass">Confirm new password</string>
+
+    <!-- SHaring facebook new post activity -->
+    <string name="share_toast_facebook">You need to be logged into the facebook app in order to share your offer</string>
+    <string name="share_succesful">Successfully posted to Facebook</string>
+    <string name="share_error">There was an error, Please Try Again</string>
+    <!-- api key google places -->
+    <string name="google_places_api_key">AIzaSyB29bDLV8gF7IJYnX4YxiYe1eGr2rUj_KI</string>
+    <!-- Location new post activity -->
+    <string name="hint_location">Where are you?</string>
+
+</resources>

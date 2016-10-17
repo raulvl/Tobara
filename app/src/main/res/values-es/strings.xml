@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tobara</string>
+    <string name="action_settings">Preferencias</string>
+
+    <string name="label_google_sign_in">Firebase + Google Sign In</string>
+    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
+
+    <string name="label_facebook_login">Firebase + Facebook Login</string>
+    <string name="desc_facebook_login">Use a Facebook Login credential to authenticate with Firebase.</string>
+
+    <string name="label_twitter_login">Firebase + Twitter Login</string>
+    <string name="desc_twitter_login">Use a Twitter Login credential to authenticate with Firebase.</string>
+
+    <string name="label_emailpassword">Email/Password Authentication</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+
+    <string name="label_anonymous_auth">Anonymous Authentication</string>
+    <string name="desc_anonymous_auth">Sign in anonymously and then later upgrade to a full Firebase Auth user..</string>
+
+    <string name="label_custom_auth">Custom Authentication</string>
+    <string name="desc_custom_auth">Use a custom token signed by your own server to authenticate with Firebase.</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="get_custom_token">Get Token</string>
+    <string name="sign_in">Iniciar Sesión</string>
+    <string name="create_account">Crear Cuenta</string>
+    <string name="sign_out">Cerrar Sesión</string>
+    <string name="disconnect">Desconectarse</string>
+    <string name="loading">Cargando…</string>
+    <string name="custom_token">Custom Token</string>
+    <string name="signed_out">Has cerrado sesión correctamente!</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Correo electrónico</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="desc_firebase_lockup">Firebase logo and name</string>
+
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+
+    <string name="google_status_fmt">Google User: %s</string>
+    <string name="google_title_text">Google Sign In</string>
+
+    <string name="facebook_status_fmt">Facebook User: %s</string>
+    <string name="facebook_title_text">Inicio de sesión con Facebook</string>
+
+    <string name="emailpassword_status_fmt">Email User: %s</string>
+    <string name="emailpassword_title_text">Email y Contraseña</string>
+
+    <string name="twitter_status_fmt">Twitter User: %s</string>
+    <string name="twitter_title_text">Twitter Login</string>
+
+    <string name="id_fmt">User ID: %s</string>
+    <string name="email_fmt">Email: %s</string>
+    <string name="title_activity_ofertas">Tobara</string>
+    <string name="log_out_ofertas">Cerrar Sesión</string>
+    <string name="title_activity_login_with_email">Ingresar</string>
+
+
+    <string name="password_hint">Contraseña</string>
+    <string name="email_hint">Correo Electrónico</string>
+    <string name="sign_up_button_label">Registrarse</string>
+    <string name="signup_error_message">Por favor verifica que ingresaste tu password y email, correctamente.</string>
+    <string name="signup_error_title">Error!</string>
+    <string name="signup_success">Cuenta creada correctamente. Puedes iniciar sesión.</string>
+    <string name="login_error_message">Por favor verifica que ingresaste tu password y email, correctamente.</string>
+    <string name="login_error_title">Error!</string>
+    <string name="login_button_label">Iniciar Sesión</string>
+    <string name="sign_up_text">Registrarse</string>
+    <string name="title_activity_login">Iniciar sesión</string>
+    <string name="add_post">Agregar Nueva Oferta</string>
+    <string name="action_logout">Cerrar Sesión</string>
+    <string name="google_console_client_id">799680535274-qn7n4a5rrhlha5rnm36m9vsd27a2lf5o.apps.googleusercontent.com</string>
+    <!-- pantalla principal -->
+    <string name="welcome">Tobara - Poder Colectivo</string>
+
+    <!-- facebook id -->
+    <string name="facebook_app_id">1728362654100253</string>
+    <string name="title_activity_post_detail">Detalles de la Oferta</string>
+
+    <!-- posts -->
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec condimentum ante, quis mattis mi. Proin ut rhoncus libero, ac euismod neque. Ut suscipit, enim a facilisis consequat, orci lacus venenatis orci, at ultricies orci nulla sed ex. In condimentum viverra velit, eget feugiat libero imperdiet vel. Aenean pretium, lectus vitae bibendum bibendum, diam turpis convallis eros, quis tristique leo sapien at ipsum. Praesent eu odio id nulla lobortis auctor. Donec eget dolor eget nisl euismod commodo vel a lacus. Quisque ut justo vitae urna pharetra accumsan. Etiam dignissim neque iaculis mauris viverra, blandit rhoncus odio porttitor. Phasellus nibh arcu.</string>
+    <string name="title_activity_new_post">Publicar nueva Oferta</string>
+    <string name="title_activity_feed">Inicio</string>
+
+    <string name="navigation_drawer_open">Abrir Menú despegable</string>
+    <string name="navigation_drawer_close">Cerrar Menú desplegable</string>
+    <string name="login_signup_button">Ingresar</string>
+    <string name="login_button_signup_logactivity">Registrarse</string>
+    <string name="my_offers">Mis Ofertas</string>
+    <string name="recent_offers">Ofertas recientes </string>
+    <string name="top_offers">Ofertas mejor valoradas</string>
+    <string name="select_source">Seleccionar Fuente</string>
+    <string name="delete_post">Oferta Borrada</string>
+
+    <string-array name="options">
+        <item>Compartir</item>
+        <item>Borrar Oferta</item>
+
+    </string-array>
+    <string-array name="options2">
+        <item>Compartir</item>
+    </string-array>
+    <string name="register_text">¿No tienes una cuenta? Regístrate aquí!</string>
+    <string name="title_activity_signup">Crear Cuenta</string>
+    <string name="button_post_comment">Comentar</string>
+    <string name="placeholder_comment_post">Escribe un comentario...</string>
+    <string name="change_picture_profile">Cambiar foto de perfil</string>
+    <string name="save_profile">GUARDAR</string>
+    <string name="title_activity_update_profile">Actualizar Perfil</string>
+    <string name="toast_update_username">Nombre de Usuario actualizado</string>
+    <string name="toast_update_email">Correo actualizado</string>
+    <string name="toast_update_pass">Contraseña actualizada</string>
+    <string name="settings_drawer">Editar perfil</string>
+    <string name="title_activity_update_password">Cambiar contraseña</string>
+    <string name="title_dialog_update_email">Escribe tu contraseña para cambiar tu correo</string>
+    <string name="cancel_button_dialog_update_email">Cancelar</string>
+    <string name="hint_conf_new_pass">Confirmar nueva contraseña</string>
+    <string name="hint_curr_pass">Contraseña actual</string>
+    <string name="hint_new_pass">Nueva contraseña</string>
+    <string name="change_password_profile">Cambiar contraseña</string>
+    <string name="share_toast_facebook">Necesitas estar conectado con facebook para poder compartir tu oferta...</string>
+    <string name="share_error">Hubo un error, Por favor inténtalo de nuevo</string>
+    <string name="share_succesful">Publicado en Facebook exitosamente</string>
+    <string name="hint_location">¿En que lugar estás?</string>
+    <string name="post_body_hint">Escribe un pie de foto...</string>
+</resources>

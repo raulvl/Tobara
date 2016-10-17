@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "799680535274",
+    "firebase_url": "https://fir-cazador.firebaseio.com",
+    "project_id": "fir-cazador",
+    "storage_bucket": "fir-cazador.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799680535274:android:09587382cfd750cf",
+        "android_client_info": {
+          "package_name": "com.villegas.raul.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799680535274-m2vuhdp009v92e7uqfg8kkj195ml0ak5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.villegas.raul.firebase",
+            "certificate_hash": "C557EB2308208B2CFD8DFF3051E9E2D78ECBC0DB"
+          }
+        },
+        {
+          "client_id": "799680535274-qn7n4a5rrhlha5rnm36m9vsd27a2lf5o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5shj24f9u4U5jp41aUxF1ZC5VNibPs2E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799680535274-qn7n4a5rrhlha5rnm36m9vsd27a2lf5o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

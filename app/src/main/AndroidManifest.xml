@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.villegas.raul.firebase"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon,android:theme"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        android:theme="@style/Huntin">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_places_api_key"/>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+         </activity>
+        <activity
+            android:name=".Ofertas"
+            android:label="@string/title_activity_ofertas"
+            android:theme="@style/Huntin"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".LoginWithEmailActivity"
+            android:label="@string/title_activity_login_with_email"
+            android:theme="@style/Huntin" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1728362654100253"
+            android:exported="true" />
+
+        <activity
+            android:name=".PostDetailActivity"
+            android:label="@string/title_activity_post_detail"
+            android:theme="@style/Huntin"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".NewPostActivity"
+            android:label="@string/title_activity_new_post"
+            android:theme="@style/Huntin" />
+        <activity
+            android:name=".Feed"
+            android:label="@string/title_activity_feed"
+            android:theme="@style/Huntin" />
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:theme="@style/Huntin" />
+        <activity
+            android:name=".UpdateProfileActivity"
+            android:label="@string/title_activity_update_profile"
+            android:theme="@style/Huntin" />
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:label="@string/title_activity_update_password"
+            android:theme="@style/Huntin"></activity>
+    </application>
+
+</manifest>
