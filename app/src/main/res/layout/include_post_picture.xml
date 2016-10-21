@@ -32,12 +32,15 @@
             android:paddingLeft="45dp"
             android:background="#AA000000"
             android:textColor="#ffffffff"
+            android:visibility="gone"
              />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_location_white"
+            android:id="@+id/location_placeholder_icon"
             android:layout_gravity="bottom"
+            android:visibility="gone"
             />
     </FrameLayout>
 

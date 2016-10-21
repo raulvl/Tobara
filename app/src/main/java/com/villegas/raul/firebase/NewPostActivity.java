@@ -40,6 +40,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -95,6 +96,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
 
     private EditText mTitleField;
     private EditText mBodyField;
+    private EditText locationInfo;
     private TextView locationField;
     private Button btn_tp;
     private ImageView image;
@@ -133,8 +135,9 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
 
 
         mTitleField = (EditText) findViewById(R.id.field_title);
-        mBodyField = (EditText) findViewById(R.id.field_body);
-        locationField = (TextView)findViewById(R.id.text_location_picture_post);
+        //mBodyField = (EditText) findViewById(R.id.field_body);
+        locationInfo = (EditText) findViewById(R.id.field_location);
+        //locationField = (TextView)findViewById(R.id.text_location_picture_post);
         image = (ImageView) findViewById(R.id.picture_offer);
         fb = (ToggleButton) findViewById(R.id.toggle);
         fb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -203,13 +206,17 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     */
     public void findPlace() {
         try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(NewPostActivity.this);
+            // Start the Intent by requesting a result, identified by a request code.
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
 
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            startActivityForResult(builder.build(NewPostActivity.this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
+
         } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+            Toast.makeText(NewPostActivity.this, "Google Play Services is not available.",
+                    Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -243,14 +250,14 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                         int likelihood_percentage =  (int) (placeLikelihood.getLikelihood() * 100);
                         Log.d("==precisión del entero:", String.valueOf(likelihood_percentage));
 
-                    if(likelihood_percentage > 25){
-                        ((EditText) findViewById(R.id.field_location))
-                                .setText(placeLikelihood.getPlace().getName());
+                    if(likelihood_percentage > 50){
+                       locationInfo.setText(placeLikelihood.getPlace().getName());
+                        Log.d("==Latitud:", String.valueOf(placeLikelihood.getPlace().getLatLng().latitude));
+                        Log.d("==longitud:", String.valueOf(placeLikelihood.getPlace().getLatLng().longitude));
                     }
                     else{
                     // change this shit to an string xml value of strings.xml
-                        ((EditText) findViewById(R.id.field_location))
-                                .setText(""+longitude +", "+latitude);
+                       locationInfo.setText(""+longitude +", "+latitude);
                     }
 
                     likelyPlaces.release();
@@ -432,7 +439,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
 
     private void submitPost() {
         final String title = mTitleField.getText().toString();
-        final String body = mBodyField.getText().toString();
+        //final String body = mBodyField.getText().toString();
         final String image_path = "photos/" + mFileUri.getLastPathSegment();
         final String download_image_path = mDownloadUrl.toString();
 
@@ -443,11 +450,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
             return;
         }
 
-        // Body is required
-        if (TextUtils.isEmpty(body)) {
-            mBodyField.setError(REQUIRED);
-            return;
-        }
+
 
         showProgressDialog();
         // [START single_value_read]
@@ -468,10 +471,10 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewPost(userId, user.username, title, body, image_path, download_image_path, user.picture_profile_path);
+                            writeNewPost(userId, user.username, title, image_path, download_image_path, user.picture_profile_path);
 
                             // set location field to the photo
-                            //  locationField.setText( ((EditText) findViewById(R.id.field_location)).getText());
+                            //locationField.setText("Buena choro");
                         }
 
                         // Finish this Activity, back to the stream
@@ -489,11 +492,11 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     }
 
     // [START write_fan_out]
-    private void writeNewPost(String userId, String username, String title, String body, String image_path, String download_image_path, String user_image_path) {
+    private void writeNewPost(String userId, String username, String title,String image_path, String download_image_path, String user_image_path) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("posts").push().getKey();
-        Post post = new Post(userId, username, title, body, image_path, download_image_path, user_image_path);
+        Post post = new Post(userId, username, title,image_path, download_image_path, user_image_path);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();

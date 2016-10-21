@@ -41,6 +41,8 @@ import com.villegas.raul.firebase.R;
 import com.villegas.raul.firebase.models.Post;
 import com.villegas.raul.firebase.models.User;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,7 +53,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     public TextView titleView;
     public TextView authorView;
-    public ImageView starView;
+    public ImageView heartView;
     public TextView numStarsView;
     public TextView bodyView;
     public ImageView pictureView;
@@ -64,6 +66,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     int progressStatus = 0;
     private Handler handler = new Handler();
     private Target target;
+    private TextView location_placeholder_text;
+    private ImageView location_placeholder_image;
 
     /** Extras **/
     public static final String EXTRA_DOWNLOAD_PATH = "extra_download_path";
@@ -74,9 +78,9 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
         titleView = (TextView) itemView.findViewById(R.id.post_title);
         authorView = (TextView) itemView.findViewById(R.id.post_author);
-        starView = (ImageView) itemView.findViewById(R.id.star);
+        heartView = (ImageView) itemView.findViewById(R.id.star);
         numStarsView = (TextView) itemView.findViewById(R.id.post_num_stars);
-        bodyView = (TextView) itemView.findViewById(R.id.post_body);
+       // bodyView = (TextView) itemView.findViewById(R.id.post_body);
 
         pbar = (ProgressBar)itemView.findViewById(R.id.progressBar1);
 
@@ -86,17 +90,23 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         pictureProfileView = (ImageView) itemView.findViewById(R.id.post_author_photo);
 
         deletepost = (ImageView) itemView.findViewById(R.id.config_posts);
+
+        location_placeholder_image = (ImageView) itemView.findViewById(R.id.location_placeholder_icon);
+        location_placeholder_text = (TextView) itemView.findViewById(R.id.text_location_picture_post);
+
+
     }
 
     public void bindToPost(final Post post, View.OnClickListener starClickListener) {
-        final String shareBody = post.body;
+        //final String shareBody = post.body;
         final String shareTitle = post.title;
         //final Uri uri_post = Uri.parse(post.image_path);
         titleView.setText(shareTitle);
         authorView.setText(post.author);
         numStarsView.setText(String.valueOf(post.starCount));
-        bodyView.setText(shareBody);
-        starView.setOnClickListener(starClickListener);
+       // bodyView.setText(shareBody);
+        heartView.setOnClickListener(starClickListener);
+
         pbar.setVisibility(View.VISIBLE);
         Picasso.with(context).load(post.user_image_path).resize(55, 55).onlyScaleDown().centerCrop().into(pictureProfileView);
         ChargeProgressBarPicture(post, true);
@@ -106,6 +116,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                if(pbar!= null) {
                    ChargeProgressBarPicture(post, false);
                    pbar.setVisibility(View.GONE);
+                   location_placeholder_text.setVisibility(View.VISIBLE);
+                   location_placeholder_image.setVisibility(View.VISIBLE);
                }
                }
 

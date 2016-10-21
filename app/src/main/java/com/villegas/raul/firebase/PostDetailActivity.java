@@ -124,7 +124,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         // Initialize Views
         mAuthorView = (TextView) findViewById(R.id.post_author);
         mTitleView = (TextView) findViewById(R.id.post_title);
-        mBodyView = (TextView) findViewById(R.id.post_body);
+        //mBodyView = (TextView) findViewById(R.id.post_body);
         mStarCount = (TextView) findViewById(R.id.post_num_stars);
         starView = (ImageView) findViewById(R.id.star);
         config_image = (ImageView) findViewById(R.id.config_posts);
@@ -185,7 +185,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     Picasso.with(mAuthorPhoto.getContext()).load(post.user_image_path).resize(55, 55).onlyScaleDown().centerCrop().into(mAuthorPhoto);
                     mAuthorView.setText(post.author);
                     mTitleView.setText(post.title);
-                    mBodyView.setText(post.body);
+                    //mBodyView.setText(post.body);
                     mStarCount.setText(String.valueOf(post.starCount));
 
 
