@@ -1,7 +1,6 @@
 package com.villegas.raul.firebase.fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,31 +9,24 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.AlertDialog;
-import android.view.WindowManager;
 import android.widget.AbsListView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,16 +43,11 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.villegas.raul.firebase.LoginWithEmailActivity;
-import com.villegas.raul.firebase.MainActivity;
-import com.villegas.raul.firebase.Ofertas;
-import com.villegas.raul.firebase.UpdateProfileActivity;
+import com.villegas.raul.firebase.GPSTracker;
+import com.villegas.raul.firebase.UserProfileActivity;
 import com.villegas.raul.firebase.models.Post;
 import com.villegas.raul.firebase.PostDetailActivity;
 import com.villegas.raul.firebase.R;
-import com.villegas.raul.firebase.models.User;
 import com.villegas.raul.firebase.viewholder.PostViewHolder;
 
 import java.io.File;
@@ -68,6 +55,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static android.R.attr.key;
 
 public abstract class PostListFragment extends Fragment{
 
@@ -102,14 +94,14 @@ public abstract class PostListFragment extends Fragment{
         mRecycler.setItemViewCacheSize(1024);
 
 
+        if(getActivity().getClass().getSimpleName().equals("Ofertas")){
+            final FloatingActionsMenu fabmenu = (FloatingActionsMenu) (getActivity()).findViewById(R.id.menu_fab);
+            //final FloatingActionButton fab = (FloatingActionButton) ((Ofertas)getActivity()).findViewById(R.id.fab_new_post);
+            TabLayout tabs = (TabLayout)(getActivity()).findViewById(R.id.tabs);
+            final ViewPager mViewPager = (ViewPager) (getActivity()).findViewById(R.id.container);
+            //tabsToTop(mViewPager, mRecycler, tabs);
 
-        final FloatingActionsMenu fabmenu = (FloatingActionsMenu) ((Ofertas)getActivity()).findViewById(R.id.menu_fab);
-       // final FloatingActionButton fab = (FloatingActionButton) ((Ofertas)getActivity()).findViewById(R.id.fab_new_post);
-        TabLayout tabs = (TabLayout)((Ofertas)getActivity()).findViewById(R.id.tabs);
-        final ViewPager mViewPager = (ViewPager) ((Ofertas)getActivity()).findViewById(R.id.container);
-
-
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
                 if (dy > 0 ||dy<0 && fabmenu != null)
@@ -126,8 +118,10 @@ public abstract class PostListFragment extends Fragment{
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
-        });
-        tabsToTop(mViewPager, mRecycler, tabs);
+            });
+
+        }
+
 
         return rootView;
     }
@@ -141,6 +135,74 @@ public abstract class PostListFragment extends Fragment{
          //mRecycler.smoothScrollToPosition(mRecycler.getAdapter().getItemCount());
     }
 
+    public void getPostbyLocation(){
+        GeoFire geoFire = new GeoFire(mDatabase.child("post_locations"));
+        final List<Post> pKeysIds = new ArrayList<>();
+        GPSTracker gps = new GPSTracker(getContext());
+        if(gps.canGetLocation()){
+
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+            GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude,longitude), 20);
+
+            geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(final String key, GeoLocation location) {
+
+                    mDatabase.child("posts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //final String key_locations = databaseReference.child("post_locations").push().getKey();
+
+                            Post p = dataSnapshot.getValue(Post.class);
+                            Map<String, Object> postValues = p.toMap();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/posts_locations_by_user/"+ getUid() +"/"+ key, postValues);
+                            mDatabase.updateChildren(childUpdates);
+
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                }
+
+                @Override
+                public void onKeyExited(String key) {
+                    mDatabase.child("posts_locations_by_user").removeValue();
+                    System.out.println(String.format("Key %s is no longer in the search area", key));
+                }
+
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
+                    System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                }
+
+                @Override
+                public void onGeoQueryReady() {
+                    System.out.println("All initial data has been loaded and events have been fired!");
+                }
+
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+                    System.err.println("There was an error with this query: " + error);
+                }
+            });
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+
+            gps.showSettingsAlert();
+        }
+
+    }
 
     public FirebaseRecyclerAdapter<Post, PostViewHolder> getFirebaseRecyclerAdapter(){
         return mAdapter;
@@ -158,7 +220,14 @@ public abstract class PostListFragment extends Fragment{
     @Override
     public  void onStart(){
         super.onStart();
-        //mRecycler.smoothScrollToPosition(mRecycler.getAdapter().getItemCount());
+        mRecycler.smoothScrollToPosition(mRecycler.getAdapter().getItemCount());
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
     }
     @Override
     public void onResume()
@@ -174,8 +243,10 @@ public abstract class PostListFragment extends Fragment{
     {
         super.onPause();
         //read current recyclerview position
-       // mRecycler.smoothScrollToPosition(mRecycler.getAdapter().getItemCount());
+        mRecycler.smoothScrollToPosition(mRecycler.getAdapter().getItemCount());
     }
+
+
 
     public void setFirebaseRecyclerAdapter(FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter, Query postsQuery){
 
@@ -196,6 +267,7 @@ public abstract class PostListFragment extends Fragment{
 
                 final StorageReference photoRef = mStorageRef.child(model.image_path);
 
+                viewHolder.getNumberOfComments(model, postRef);
 
                 //See post detail
                 viewHolder.pictureView.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +277,29 @@ public abstract class PostListFragment extends Fragment{
                         Intent intent = new Intent(getActivity(), PostDetailActivity.class);
                         intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
                         startActivity(intent);
+                    }
+                });
+
+                viewHolder.titleView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+                        intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
+                        startActivity(intent);
+                    }
+                });
+
+                viewHolder.pictureProfileView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goToProfile(model);
+                    }
+                });
+
+                viewHolder.authorView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goToProfile(model);
                     }
                 });
                 // Open dialog for sharing and deleting only your own posts
@@ -245,22 +340,14 @@ public abstract class PostListFragment extends Fragment{
 
     }
 
-   public void tabsToTop(final ViewPager v, final RecyclerView r, TabLayout t){
-        if (t != null) {
-            t.setOnTabSelectedListener(
-                    new TabLayout.ViewPagerOnTabSelectedListener(v) {
-                        @Override
-                        public void onTabReselected(TabLayout.Tab tab) {
-                            r.smoothScrollToPosition(r.getAdapter().getItemCount());
-                        }
-                        @Override
-                        public void onTabSelected(TabLayout.Tab tab) {
-                            v.setCurrentItem(tab.getPosition());
-                        }
 
-                    });
-        }
+
+    public void goToProfile(Post model){
+        Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+        intent.putExtra(UserProfileActivity.EXTRA_POST_KEY, model.uid);
+        startActivity(intent);
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -268,14 +355,27 @@ public abstract class PostListFragment extends Fragment{
 
 
         // Set up Layout Manager, reverse layout
+        if(getActivity().getClass().getSimpleName().equals("Ofertas")) {
+            getPostbyLocation();
+            mManager = new LinearLayoutManager(getActivity());
+            mManager.setReverseLayout(true);
+            mManager.setStackFromEnd(true);
+            mRecycler.setLayoutManager(mManager);
+            // Set up FirebaseRecyclerAdapter with the Query
 
-        mManager = new LinearLayoutManager(getActivity());
-        mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
-        mRecycler.setLayoutManager(mManager);
-        // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = getQuery(mDatabase);
-        setFirebaseRecyclerAdapter(mAdapter, postsQuery);
+            Query postsQuery = getQuery(mDatabase);
+            setFirebaseRecyclerAdapter(mAdapter, postsQuery);
+        }
+        else{
+            mManager = new LinearLayoutManager(getActivity());
+            mManager.setReverseLayout(true);
+            mManager.setStackFromEnd(true);
+            mRecycler.setLayoutManager(mManager);
+            // Set up FirebaseRecyclerAdapter with the Query
+            Query postsQuery = getQuery(mDatabase);
+            setFirebaseRecyclerAdapter(mAdapter, postsQuery);
+
+        }
 
 
     }
@@ -294,7 +394,7 @@ public abstract class PostListFragment extends Fragment{
             opciones = getResources().getStringArray(R.array.options2);
         }
 
-        AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
         alertdialogbuilder.setItems(opciones, new DialogInterface.OnClickListener() {
 
             @Override
@@ -317,26 +417,50 @@ public abstract class PostListFragment extends Fragment{
                     }
                 }
                 if (which == 1) {
-                    postRef.getRef().removeValue();
-                    mDatabase.child("post-comments").child(postRef.getKey()).removeValue();
-                    mDatabase.child("user-posts").child(model.uid).child(postRef.getKey()).removeValue();
-                    // Delete the file
-                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    AlertDialog.Builder alertdialogbuilderDelete = new AlertDialog.Builder(getContext());
+                    alertdialogbuilderDelete.setTitle(R.string.delete_post_dialog);
+                    alertdialogbuilderDelete.setIcon(R.drawable.ic_info_black_24dp);
+                    alertdialogbuilderDelete.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            // File deleted successfully
+                        public void onClick(DialogInterface dialog, int which) {
+                            postRef.getRef().removeValue();
+                            mDatabase.child("post-comments").child(postRef.getKey()).removeValue();
+                            mDatabase.child("user-posts").child(model.uid).child(postRef.getKey()).removeValue();
+                            mDatabase.child("posts").child(postRef.getKey()).removeValue();
+                            GeoFire geoFire = new GeoFire(mDatabase.child("post_locations"));
+                            geoFire.removeLocation(postRef.getKey(), new GeoFire.CompletionListener() {
+                                @Override
+                                public void onComplete(String key, DatabaseError error) {
+                                    //mDatabase.child("posts_locations_by_user").child(getUid()).child(postRef.getKey()).removeValue();
+                                    getPostbyLocation();
+                                    setFirebaseRecyclerAdapter(mAdapter, getQuery(mDatabase));
+                                }
+                            });
+                            //mDatabase.child("post_locations").child(postRef.getKey()).removeValue();
+                            // Delete the file
+                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // File deleted successfully
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.delete_post),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Uh-oh, an error occurred!
+                                }
+                            });
                             Toast.makeText(getActivity(), getResources().getString(R.string.delete_post),
                                     Toast.LENGTH_SHORT).show();
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
+                    }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Uh-oh, an error occurred!
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
                         }
-                    });
-                    Toast.makeText(getActivity(), getResources().getString(R.string.delete_post),
-                            Toast.LENGTH_SHORT).show();
-
+                    }).show();
                 }
 
             }
@@ -416,7 +540,7 @@ public abstract class PostListFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         if (mAdapter != null) {
-            mAdapter.cleanup();
+           mAdapter.cleanup();
         }
     }
 

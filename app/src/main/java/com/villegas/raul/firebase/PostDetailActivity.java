@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -60,9 +61,17 @@ import com.villegas.raul.firebase.viewholder.PostViewHolder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import static com.villegas.raul.firebase.R.id.star;
 
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener{
 
@@ -80,6 +89,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private TextView mTitleView;
     private TextView mBodyView;
     private TextView mStarCount;
+    private TextView dateInfo;
     private EditText mCommentField;
     private ImageView mCommentPhoto;
     private ImageView mImageView;
@@ -94,7 +104,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private DatabaseReference mDatabase;
     private StorageReference photoRef;
     private Context context;
-
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
+    private TextView location_placeholder_text;
+    private ImageView location_placeholder_image;
+    private String getUser;
+    private String getUserComment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,8 +140,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mAuthorView = (TextView) findViewById(R.id.post_author);
         mTitleView = (TextView) findViewById(R.id.post_title);
         //mBodyView = (TextView) findViewById(R.id.post_body);
+        dateInfo = (TextView) findViewById(R.id.post_date);
         mStarCount = (TextView) findViewById(R.id.post_num_stars);
-        starView = (ImageView) findViewById(R.id.star);
+        starView = (ImageView) findViewById(star);
         config_image = (ImageView) findViewById(R.id.config_posts);
         mImageView = (ImageView) findViewById(R.id.imageViewPost);
         mAuthorPhoto = (ImageView)findViewById(R.id.post_author_photo);
@@ -135,12 +151,16 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mCommentPhoto = (ImageView) findViewById(R.id.comment_photo);
         mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
         // check the behavior of this
-        mCommentsRecycler.setHasFixedSize(true);
+        mCommentsRecycler.setHasFixedSize(false);
         mCommentsRecycler.setItemViewCacheSize(1024);
 
+
         pbar = (ProgressBar)findViewById(R.id.progressBar1);
+        mAuthorPhoto.setOnClickListener(this);
         mCommentButton.setOnClickListener(this);
         mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        location_placeholder_image = (ImageView) findViewById(R.id.location_placeholder_icon);
+        location_placeholder_text = (TextView) findViewById(R.id.text_location_picture_post);
 
 
     }
@@ -164,21 +184,28 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 // persistencia de datos en el post
                 //postRef.keepSynced(true);
 
-
-                pbar.setVisibility(View.VISIBLE);
-
+                getUser = post.uid;
+                pbar.setVisibility(View.VISIBLE );
+                location_placeholder_text.setText(post.location_name);
                 try {
                     // Obtener link de la foto y enlazarla al imageview
+                    ChargeProgressBarPicture(post, true);
                     Picasso.with(mImageView.getContext()).load(post.download_image_path).error(R.mipmap.ic_new_post_image).fit().centerCrop().into(mImageView, new Callback() {
                         @Override
                         public void onSuccess() {
                             if (pbar != null) {
+                                ChargeProgressBarPicture(post, false);
                                 pbar.setVisibility(View.GONE);
+                                location_placeholder_text.setVisibility(View.VISIBLE);
+                                location_placeholder_image.setVisibility(View.VISIBLE);
                             }
                         }
 
                         @Override
-                        public void onError() {  pbar.setVisibility(View.GONE);  }
+                        public void onError() {
+                            ChargeProgressBarPicture(post, false);
+                            pbar.setVisibility(View.GONE);
+                        }
                     });
 
 
@@ -186,6 +213,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     mAuthorView.setText(post.author);
                     mTitleView.setText(post.title);
                     //mBodyView.setText(post.body);
+                    dateInfo.setText(getDate(post));
                     mStarCount.setText(String.valueOf(post.starCount));
 
 
@@ -197,9 +225,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     });
                     // Determine if the current user has liked this post and set UI accordingly
                     if (post.stars.containsKey(getUid())) {
-                        starView.setImageResource(R.drawable.ic_toggle_star_24);
+                        starView.setImageResource(R.drawable.heart);
                     } else {
-                        starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+                        starView.setImageResource(R.drawable.heart_outline);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -228,6 +256,91 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         // Listen for comments
         mAdapter = new CommentAdapter(this, mCommentsReference);
         mCommentsRecycler.setAdapter(mAdapter);
+    }
+
+
+
+    public void ChargeProgressBarPicture(final Post post, Boolean b) {
+        if (b == true) {
+            new Thread(new Runnable() {
+                public void run() {
+                    while (progressStatus < 20) {
+                        progressStatus += 1;
+                        // Update the progress bar and display the
+                        //current value in the text view
+                        handler.post(new Runnable() {
+                            public void run() {
+                                pbar.setProgress(progressStatus);
+                            }
+                        });
+                        try {
+                            // Sleep for 200 milliseconds.
+                            //Just to display the progress slowly
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
+
+    public String getDate(Post post) throws ParseException {
+        String date="";
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(c.getTime());
+
+
+        long actual_time = c.getTime().getTime();
+        SimpleDateFormat curFormater = new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy");
+        Date ptime = getDateFromString(post.date);
+        long post_time = ptime.getTime();
+        long secs = (actual_time - post_time)/1000;
+        long hours = secs / 3600 ;
+        long mins = secs /60;
+        long days = hours / 24 ;
+        long weeks = days / 7;
+
+        //long milis_to_hours = TimeUnit.MILLISECONDS.toHours(hours);
+
+
+        if(hours > 24){
+            SimpleDateFormat holder = new SimpleDateFormat("dd MMMM yyyy");
+            Date d = getDateFromString(post.date);
+            String testing = holder.format(d);
+            date = getResources().getString(R.string.date_post_over_a_day)+" "+testing;
+        }
+        else if(mins > 60 ) {
+            date = getResources().getString(R.string.date_post)+" "+hours+" "+getResources().getString(R.string.date_hours);
+        }
+        else if (secs > 60){
+            date = getResources().getString(R.string.date_post)+" "+mins+" "+getResources().getString(R.string.date_minutes);
+        }
+        else{
+            date = getResources().getString(R.string.date_post)+" "+mins+" "+getResources().getString(R.string.date_seconds);
+        }
+        return date;
+    }
+
+    private Date getDateFromString(String sDate)
+    {
+        String dateFormat = "EEE MMM dd HH:mm:ss z yyyy";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, new Locale("en_US"));
+        sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+        Date newDate = null;
+        try {
+            newDate = sdf.parse(sDate);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return newDate;
+
     }
 
     public void getOptionMenu(final Post model ){
@@ -269,6 +382,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 if (which == 1) {
+
                     mPostReference.getRef().removeValue();
                     mDatabase.child("user-posts").child(model.uid).child(mPostReference.getKey()).removeValue();
 
@@ -279,6 +393,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                             // File deleted successfully
                             Toast.makeText(PostDetailActivity.this, getResources().getString(R.string.delete_post),
                                     Toast.LENGTH_SHORT).show();
+
 
 
                         }
@@ -349,6 +464,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.button_post_comment:
                 postComment();
                 break;
+            case R.id.post_author_photo:
+                Intent i = new Intent(getApplicationContext(), UserProfileActivity.class);
+                i.putExtra("userKey", getUser);
+                startActivity(i);
+            case R.id.comment_photo:
+                break;
         }
     }
 
@@ -360,6 +481,11 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     private void postComment() {
         final String uid = getUid();
+        TimeZone zone = Calendar.getInstance().getTimeZone();
+        Calendar c = Calendar.getInstance(zone);
+        System.out.println("Current time => " + c.getTime());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        final String date = String.valueOf(c.getTime());
         FirebaseDatabase.getInstance().getReference().child("users").child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -370,7 +496,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
                         // Create new comment object
                         String commentText = mCommentField.getText().toString();
-                        Comment comment = new Comment(uid, authorName, commentText);
+                        Comment comment = new Comment(uid, authorName, commentText, date);
                         Log.d(TAG, "onChildAdded:" + user.picture_profile_path);
 
 
@@ -394,14 +520,18 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         public TextView authorView;
         public TextView bodyView;
         public ImageView pictureView;
+        public TextView dateView;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
             authorView = (TextView) itemView.findViewById(R.id.comment_author);
             bodyView = (TextView) itemView.findViewById(R.id.comment_body);
             pictureView = (ImageView) itemView.findViewById(R.id.comment_photo);
+            dateView = (TextView) itemView.findViewById(R.id.post_comment_date);
 
         }
+
+
     }
 
     private static class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
@@ -513,11 +643,23 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             return new CommentViewHolder(view);
         }
 
+
         @Override
         public void onBindViewHolder(final CommentViewHolder holder, int position) {
-            Comment comment = mComments.get(position);
+            final Comment comment = mComments.get(position);
             holder.authorView.setText(comment.author);
             holder.bodyView.setText(comment.text);
+            holder.pictureView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToUserProfileComment(comment);
+                }
+            });
+            try {
+                holder.dateView.setText(getDate(comment));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
             mDatabase.child("users").child(comment.uid).addListenerForSingleValueEvent(
@@ -548,5 +690,69 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             }
         }
 
+        public String getDate(Comment comment) throws ParseException {
+            String date="";
+            Calendar c = Calendar.getInstance();
+
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            String formattedDate = df.format(c.getTime());
+
+
+            long actual_time = c.getTime().getTime();
+            System.out.println("Actual time => " + actual_time);
+            SimpleDateFormat curFormater = new SimpleDateFormat("E MMM dd hh:mm:ss Z yyyy");
+            Date ptime = getDateFromString(comment.date);
+            long post_time = ptime.getTime();
+
+
+
+            long secs = (actual_time - post_time)/1000;
+            long hours = secs / 3600 ;
+            long mins = secs /60;
+            long days = hours / 24 ;
+            long weeks = days / 7;
+
+            //long milis_to_hours = TimeUnit.MILLISECONDS.toHours(hours);
+
+
+            if(hours > 24){
+                SimpleDateFormat holder = new SimpleDateFormat("dd MMMM yyyy");
+                Date d = getDateFromString(comment.date);
+                String testing = holder.format(d);
+                date = mContext.getResources().getString(R.string.date_post_over_a_day)+" "+testing;
+            }
+            else if(mins > 60 ) {
+                date = mContext.getResources().getString(R.string.date_post)+" "+hours+" "+mContext.getResources().getString(R.string.date_hours);
+            }
+            else if (secs > 60){
+                date = mContext.getResources().getString(R.string.date_post)+" "+mins+" "+mContext.getResources().getString(R.string.date_minutes);
+            }
+            else{
+                date = mContext.getResources().getString(R.string.date_post)+" "+mins+" "+mContext.getResources().getString(R.string.date_seconds);
+            }
+            return date;
+        }
+
+        private Date getDateFromString(String sDate)
+        {
+            String dateFormat = "EEE MMM dd HH:mm:ss z yyyy";
+
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, new Locale("en_US"));
+            sdf.setTimeZone(TimeZone.getTimeZone("CET"));
+            Date newDate = null;
+            try {
+                newDate = sdf.parse(sDate);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return newDate;
+
+        }
+        public void goToUserProfileComment(Comment c){
+            Intent i = new Intent(mContext, UserProfileActivity.class);
+            i.putExtra("userKey", c.uid);
+            mContext.startActivity(i);
+        }
     }
 }

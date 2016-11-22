@@ -37,6 +37,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.share.model.ShareLinkContent;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -72,8 +74,13 @@ import com.villegas.raul.firebase.viewholder.PostViewHolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 
@@ -106,8 +113,9 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     private GoogleApiClient mGoogleApiClient;
     int PLACE_PICKER_REQUEST = 1;//Predefined req_code
     Location mLastLocation;
-    double latitude ;
-    double longitude ;
+    private double latitude ;
+    private double longitude ;
+    private String location_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +125,11 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Calendar c = Calendar.getInstance();
+        String fecha = String.valueOf(c.get(Calendar.DATE));
+
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -251,13 +264,17 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                         Log.d("==precisión del entero:", String.valueOf(likelihood_percentage));
 
                     if(likelihood_percentage > 50){
-                       locationInfo.setText(placeLikelihood.getPlace().getName());
+                        locationInfo.setText(placeLikelihood.getPlace().getName());
                         Log.d("==Latitud:", String.valueOf(placeLikelihood.getPlace().getLatLng().latitude));
                         Log.d("==longitud:", String.valueOf(placeLikelihood.getPlace().getLatLng().longitude));
+                        location_name = placeLikelihood.getPlace().getName().toString();
+                        longitude = placeLikelihood.getPlace().getLatLng().longitude;
+                        latitude = placeLikelihood.getPlace().getLatLng().latitude;
                     }
                     else{
                     // change this shit to an string xml value of strings.xml
                        locationInfo.setText(""+longitude +", "+latitude);
+                       location_name = String.valueOf(longitude) + ", " + String.valueOf(latitude);
                     }
 
                     likelyPlaces.release();
@@ -324,6 +341,9 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                 */
                 ((EditText) findViewById(R.id.field_location))
                         .setText(place.getName());
+                location_name = place.getName().toString();
+                longitude = place.getLatLng().longitude;
+                latitude = place.getLatLng().latitude;
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
@@ -437,12 +457,21 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
         return profile_picture;
     }
 
+
+
+
+
     private void submitPost() {
         final String title = mTitleField.getText().toString();
         //final String body = mBodyField.getText().toString();
         final String image_path = "photos/" + mFileUri.getLastPathSegment();
         final String download_image_path = mDownloadUrl.toString();
 
+
+        TimeZone zone = Calendar.getInstance().getTimeZone();
+        Calendar c = Calendar.getInstance(zone);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        final String date = String.valueOf(c.getTime());
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
@@ -471,7 +500,7 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewPost(userId, user.username, title, image_path, download_image_path, user.picture_profile_path);
+                            writeNewPost(userId, user.username, title, image_path, download_image_path, user.picture_profile_path, date, location_name, String.valueOf(latitude), String.valueOf(longitude));
 
                             // set location field to the photo
                             //locationField.setText("Buena choro");
@@ -492,13 +521,15 @@ public class NewPostActivity extends BaseActivity implements View.OnClickListene
     }
 
     // [START write_fan_out]
-    private void writeNewPost(String userId, String username, String title,String image_path, String download_image_path, String user_image_path) {
+    private void writeNewPost(String userId, String username, String title,String image_path, String download_image_path, String user_image_path, String date, String location_name, String location_latitude, String location_longitude) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
+        GeoFire geoFire;
         String key = mDatabase.child("posts").push().getKey();
-        Post post = new Post(userId, username, title,image_path, download_image_path, user_image_path);
+        Post post = new Post(userId, username, title,image_path, download_image_path, user_image_path, date, location_name, location_latitude, location_longitude);
         Map<String, Object> postValues = post.toMap();
-
+        geoFire = new GeoFire(mDatabase.child("post_locations"));
+        geoFire.setLocation(key, new GeoLocation(Double.valueOf(location_latitude), Double.valueOf(location_longitude)));
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);

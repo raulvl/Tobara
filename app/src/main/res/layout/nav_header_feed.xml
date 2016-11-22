@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="190dp"
-    android:background="@drawable/background_label_fab"
+    android:background="@color/primary_dark"
     android:orientation="vertical"
     >
     <ImageView
@@ -36,7 +36,7 @@
         android:textColor="#FFF"
         android:textStyle="bold"
         android:gravity="left"
-        android:paddingTop="10dp"
+        android:paddingTop="15dp"
         android:paddingBottom="4dp"
         android:layout_above="@+id/textViewEmail"
         android:layout_centerHorizontal="true"

@@ -76,6 +76,8 @@ dependencies {
     // Dialog fragments library and colors associated
     compile 'com.afollestad.material-dialogs:core:0.9.0.1'
     compile 'com.afollestad.material-dialogs:commons:0.9.0.1'
+    // GEO FIRE
+    compile 'com.firebase:geofire-android:2.1.1'
 
 }
 apply plugin: 'com.google.gms.google-services'

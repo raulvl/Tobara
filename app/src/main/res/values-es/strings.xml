@@ -101,6 +101,11 @@
     <string-array name="options2">
         <item>Compartir</item>
     </string-array>
+
+    <string-array name="DeleteDialog">
+        <item>Ok</item>
+        <item>Cancelar</item>
+    </string-array>
     <string name="register_text">¿No tienes una cuenta? Regístrate aquí!</string>
     <string name="title_activity_signup">Crear Cuenta</string>
     <string name="button_post_comment">Comentar</string>
@@ -124,4 +129,16 @@
     <string name="share_succesful">Publicado en Facebook exitosamente</string>
     <string name="hint_location">¿En que lugar estás?</string>
     <string name="post_body_hint">Escribe un pie de foto...</string>
+    <string name="date_post">Publicado hace</string>
+    <string name="date_hours">horas </string>
+    <string name="date_minutes">minutos</string>
+    <string name="date_seconds">segundos</string>
+    <string name="date_post_over_a_day">Publicado el</string>
+    <string name="title_activity_user_profile">Perfil</string>
+    <string name="nav_drawer_go_profile">Perfil</string>
+    <string name="no_post_nearby_helper">No hay post cerca de ti en este momento. Echa un vistazo a los posts más recientes!</string>
+    <string name="delete_post_dialog">¿Está seguro que quieres eliminar esta oferta?</string>
+    <string name="delete_post_dialog_title"></string>
+    <string name="no">No</string>
+    <string name="yes">Si</string>
 </resources>

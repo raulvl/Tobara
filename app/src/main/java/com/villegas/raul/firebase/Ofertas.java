@@ -1,6 +1,7 @@
 package com.villegas.raul.firebase;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,12 +15,14 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 
@@ -53,7 +56,11 @@ import com.villegas.raul.firebase.fragment.RecentPostsFragment;
 import com.villegas.raul.firebase.models.User;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.UUID;
+
+import static android.os.Build.VERSION_CODES.M;
 
 public class Ofertas extends BaseActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -152,8 +159,17 @@ public class Ofertas extends BaseActivity implements View.OnClickListener, Navig
         mViewPager.setOffscreenPageLimit(3);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        goTop(mViewPager, tabLayout);
         //imagen = (ImageView) findViewById(R.id.imageViewPost);
         FabMenu = (FloatingActionsMenu) findViewById(R.id.menu_fab);
+
+
+
+
+
+
+
+
 
         findViewById(R.id.accion_buscar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +200,6 @@ public class Ofertas extends BaseActivity implements View.OnClickListener, Navig
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
                     emailNV.setText(user.getEmail());
                     setPictureProfileDrawable(user);
                     //Picasso.with(navProfilePicture.getContext()).load(user.getPhotoUrl()).resize(110, 110).onlyScaleDown().centerCrop().into(navProfilePicture);
@@ -201,6 +216,35 @@ public class Ofertas extends BaseActivity implements View.OnClickListener, Navig
         };
 
 
+    }
+
+    private void goTop(final ViewPager v, TabLayout t){
+        t.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                v.setCurrentItem(tab.getPosition(), true);
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                try {
+                    Fragment f = mPagerAdapter.getItem(tab.getPosition());
+                    if (f != null) {
+                        View fragmentView = f.getView();
+                        RecyclerView mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.messages_list);//mine one is RecyclerView
+                        if (mRecyclerView != null)
+                            mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount());
+                    }
+                } catch (NullPointerException npe) {
+                }
+            }
+        });
     }
 
     private void setPictureProfileDrawable(FirebaseUser user) {
@@ -234,6 +278,7 @@ public class Ofertas extends BaseActivity implements View.OnClickListener, Navig
 
 
     }
+
 
     private String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
@@ -464,15 +509,15 @@ public class Ofertas extends BaseActivity implements View.OnClickListener, Navig
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_settings) {
             Intent i = new Intent(this, UpdateProfileActivity.class);
             startActivity(i);
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        }else if(id == R.id.nav_profile){
+            Intent i = new Intent(this, UserProfileActivity.class);
+            startActivity(i);
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

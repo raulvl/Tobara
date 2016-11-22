@@ -234,6 +234,7 @@ public class UpdateProfileActivity extends BaseActivity implements View.OnClickL
                     for(DataSnapshot snapshotArray: dataSnapshot.getChildren()){
                        Log.d(TAG, "User:" + snapshotArray.getKey());
                         mDatabase.child("posts").child(snapshotArray.getKey()).child("author").setValue(usernameET.getText().toString());
+                        mDatabase.child("posts_locations_by_user").child(getUid()).child(snapshotArray.getKey()).child("author").setValue(usernameET.getText().toString());
                         mDatabase.child("users").child(getUid()).child("username").setValue(usernameET.getText().toString());
                         mDatabase.child("user-posts").child(getUid()).child(snapshotArray.getKey()).child("author").setValue(usernameET.getText().toString());
                         getUserComments(snapshotArray.getKey());
@@ -257,7 +258,7 @@ public class UpdateProfileActivity extends BaseActivity implements View.OnClickL
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
                         User user = dataSnapshot.getValue(User.class);
-                        Picasso.with(changepictureIV.getContext()).load(user.picture_profile_path).resize(70, 70).into(changepictureIV);
+                        Picasso.with(changepictureIV.getContext()).load(user.picture_profile_path).resize(60, 60).into(changepictureIV);
                         usernameET.setText(user.username);
                         emailET.setText(user.email);
                     }
