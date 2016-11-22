@@ -244,11 +244,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             public void onDataChange(DataSnapshot dataSnapshot) {
                 long n = dataSnapshot.getChildrenCount();
                 System.out.println("Number of comments: " +n);
-                if(n==0){
-                    num_comments.setText("");
-                }else{
-                    num_comments.setText(String.valueOf(n));
-                }
+                num_comments.setText(String.valueOf(n));
+
             }
 
             @Override
